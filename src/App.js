@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import Screen from './Screen';
+import { testFunnel } from './testing';
+import ErrorScreen from './ErrorScreen';
 
 function App() {
+  // renders multiple screen components depending on size of array in script
+  const renderScreens = (funnel) => {
+    // screen Info is an array
+    const screens = funnel.map((screenData, i) => {
+      // create state which is the next path, if last return submit
+      // path is equal to the index, so next path is index+1
+      const path = i !== 0 ? `/${i}` : '/';
+      return (
+        <Route
+          path={path}
+          element={
+            <Screen
+              {...screenData}
+              index={i}
+              finalScreenIndex={funnel.length - 1}
+            />
+          }
+        />
+      );
+    });
+
+    return screens;
+  };
+  // setup React Router to deal with the screens
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='text-center'>
+      <h1>App Level, This will hold the background img</h1>
+      <p>add React Router to JSX</p>
+      <Routes>
+        {renderScreens(testFunnel)}
+        <Route path='*' element={<ErrorScreen />} />
+      </Routes>
     </div>
   );
 }
